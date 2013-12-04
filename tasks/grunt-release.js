@@ -21,7 +21,7 @@ module.exports = function(grunt){
     bump(setup(options.file, type));
   });
   grunt.registerTask('release', 'bump version, git tag, git push, npm publish', function(type){
-    
+
     //defaults
     var options = this.options({
       bump: true,
@@ -79,7 +79,7 @@ module.exports = function(grunt){
       var cmd = 'npm publish';
       var msg = 'published '+ config.newVersion +' to npm';
       var npmtag = getNpmTag();
-      if (npmtag){ 
+      if (npmtag){
         cmd += ' --tag ' + npmtag;
         msg += ' with a tag of "' + npmtag + '"';
       }
@@ -122,7 +122,7 @@ module.exports = function(grunt){
         .end(function(res){
           if (res.statusCode === 201){
             success();
-          } 
+          }
           else {
             grunt.fail.warn('Error creating github release. Response: ' + res.text);
           }
