@@ -10,6 +10,16 @@ var shell = require('shelljs');
 var semver = require('semver');
 
 module.exports = function(grunt){
+  grunt.registerTask('bump-only', 'bump version only', function(type){
+
+    //defaults
+    var options = this.options({
+      file: grunt.config('pkgFile') || 'package.json'
+    });
+
+    grunt.log('Only bumping the version.');
+    bump(setup(options.file, type));
+  });
   grunt.registerTask('release', 'bump version, git tag, git push, npm publish', function(type){
     
     //defaults
