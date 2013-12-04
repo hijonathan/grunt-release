@@ -45,15 +45,6 @@ module.exports = function(grunt){
     if (options.npm) publish(config);
     if (options.github) githubRelease(config);
 
-    function setup(file, type){
-      var pkg = grunt.file.readJSON(file);
-      var newVersion = pkg.version;
-      if (options.bump) {
-        newVersion = semver.inc(pkg.version, type || 'patch');
-      }
-      return {file: file, pkg: pkg, newVersion: newVersion};
-    }
-
     function add(config){
       run('git add ' + config.file);
     }
@@ -104,12 +95,6 @@ module.exports = function(grunt){
       if (msg) grunt.log.ok(msg);
     }
 
-    function bump(config){
-      config.pkg.version = config.newVersion;
-      grunt.file.write(config.file, JSON.stringify(config.pkg, null, '  ') + '\n');
-      grunt.log.ok('Version bumped to ' + config.newVersion);
-    }
-
     function githubRelease(){
       var request = require('superagent');
       var done = task.async();
@@ -138,6 +123,21 @@ module.exports = function(grunt){
           done();
         }
     }
+
+  function setup(file, type){
+    var pkg = grunt.file.readJSON(file);
+    var newVersion = pkg.version;
+    if (options.bump) {
+      newVersion = semver.inc(pkg.version, type || 'patch');
+    }
+    return {file: file, pkg: pkg, newVersion: newVersion};
+  }
+
+  function bump(config){
+    config.pkg.version = config.newVersion;
+    grunt.file.write(config.file, JSON.stringify(config.pkg, null, '  ') + '\n');
+    grunt.log.ok('Version bumped to ' + config.newVersion);
+  }
 
   });
 };
