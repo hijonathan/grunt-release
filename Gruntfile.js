@@ -1,6 +1,6 @@
 module.exports = function(grunt) {
   grunt.initConfig({
-    
+
     clean: {
       test: 'test/fixtures/_component.json'
     },
@@ -37,13 +37,23 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-nodeunit');
 
-  grunt.registerTask('test', [
-    'clean',
-    'setup',
-    'release',
-    'nodeunit',
-    'clean'
-  ]);
+  grunt.registerTask('test', function() {
+    grunt.task.run([
+      'clean',
+      'setup',
+      'release',
+      'nodeunit',
+      'clean'
+    ]);
+
+    grunt.task.run([
+      'clean',
+      'setup',
+      'bump-only',
+      'nodeunit',
+      'clean'
+    ]);
+  });
 
   grunt.registerMultiTask('setup', 'Setup test fixtures', function(){
     this.files.forEach(function(f){
