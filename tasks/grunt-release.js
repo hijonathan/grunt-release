@@ -12,13 +12,11 @@ var semver = require('semver');
 module.exports = function(grunt){
   grunt.registerTask('bump-only', 'bump version only', function(type){
 
-    //defaults
-    var options = this.options({
-      file: grunt.config('pkgFile') || 'package.json'
-    });
+    var file = grunt.config.get('release.options.file') || grunt.config('pkgFile') || 'package.json';
+    grunt.log.writeln(file);
 
-    grunt.log('Only bumping the version.');
-    bump(setup(options.file, type));
+    grunt.log.writeln('Only bumping the version.');
+    bump(setup(file, true, type));
   });
   grunt.registerTask('release', 'bump version, git tag, git push, npm publish', function(type){
 
@@ -34,7 +32,7 @@ module.exports = function(grunt){
       npm : true
     });
 
-    var config = setup(options.file, type);
+    var config = setup(options.file, options.bump, type);
     var templateOptions = {
       data: {
         version: config.newVersion
@@ -133,11 +131,12 @@ module.exports = function(grunt){
           done();
         }
     }
+  });
 
-  function setup(file, type){
+  function setup(file, bump, type){
     var pkg = grunt.file.readJSON(file);
     var newVersion = pkg.version;
-    if (options.bump) {
+    if (bump) {
       newVersion = semver.inc(pkg.version, type || 'patch');
     }
     return {file: file, pkg: pkg, newVersion: newVersion};
@@ -149,5 +148,4 @@ module.exports = function(grunt){
     grunt.log.ok('Version bumped to ' + config.newVersion);
   }
 
-  });
 };
